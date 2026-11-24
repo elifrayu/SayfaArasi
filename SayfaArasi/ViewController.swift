@@ -11,9 +11,24 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        view.backgroundColor = AppColors.background
+        print("1-viewdidload")
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        print("2-we will appear")
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+            super.viewDidAppear(animated)
 
+            print("3 - viewDidAppear")
+        }
+
+    override func viewWillDisappear(_ animated: Bool) {
+            super.viewWillDisappear(animated)
+            print("4 - viewWillDisappear")
+        }
 
 }
 
