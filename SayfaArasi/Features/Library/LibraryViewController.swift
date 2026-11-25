@@ -9,7 +9,6 @@ import UIKit
 
 final class LibraryViewController: UIViewController {
     
-    
     private let titleLabel = UILabel()
     private let subtitleLabel = UILabel()
     private let headerStackView = UIStackView()
@@ -19,20 +18,54 @@ final class LibraryViewController: UIViewController {
     
     var onSearchTapped: (() -> Void)?
     
+    private let viewModel: LibraryViewModel
+    
+    private let layout = UICollectionViewFlowLayout()
+    
+    private lazy var collectionView = UICollectionView(
+        frame: .zero,
+        collectionViewLayout: layout
+    )
+    
+    // dışarıdan bir viewmodel verilmesi zorunlu tutmak için
+    init(viewModel: LibraryViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        print(viewModel.books.count)
+    }
+    //dinamik yönetmek için hesaplanmış boyutları hesapladık
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        let spacing = layout.minimumInteritemSpacing
+        let availableWidth = collectionView.bounds.width - spacing
+        let itemWidth = floor(availableWidth / 2)
+
+        layout.itemSize = CGSize(
+                width: itemWidth,
+                height: 260
+                )
     }
     
     private func setupUI(){
         
         view.backgroundColor = AppColors.background
-        title = "Kütüphane"
         
         setupLabels()
         setupBookMark()
         setupStackViews()
         setupSearchButton()
+        setupCollectionView()
         setupConstraints()
     
     }
@@ -88,6 +121,7 @@ final class LibraryViewController: UIViewController {
         
         headerStackView.translatesAutoresizingMaskIntoConstraints = false
         searchButton.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
 
@@ -124,11 +158,81 @@ final class LibraryViewController: UIViewController {
             headerStackView.trailingAnchor.constraint(
                 lessThanOrEqualTo: searchButton.leadingAnchor,
                 constant: -12
-            )
+            ),
+            collectionView.topAnchor.constraint(
+                equalTo: headerStackView.bottomAnchor,
+                constant: 24
+            ),
+            collectionView.leadingAnchor.constraint(
+                equalTo: view.leadingAnchor,
+                constant: 24
+            ),
+            collectionView.trailingAnchor.constraint(
+                equalTo: view.trailingAnchor,
+                constant: -24
+            ),
+            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
+    private func setupCollectionView(){
+        setupLayout()
+        collectionView.backgroundColor = .clear
+        collectionView.register(BookCollectionViewCell.self, forCellWithReuseIdentifier: BookCollectionViewCell.reuseIdentifier)
+        
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        view.addSubview(collectionView)
+    }
+    
+    private func setupLayout() {
+        layout.scrollDirection = .vertical
+        layout.minimumInteritemSpacing = 16
+        layout.minimumLineSpacing = 24
+    }
+    
     @objc private func searchButtonTapped(){
         onSearchTapped?()
     }
+   
 }
 
+
+
+extension LibraryViewController: UICollectionViewDataSource {
+
+    func collectionView(
+        _ collectionView: UICollectionView,
+        //kaç hücre göstermeliyim
+        numberOfItemsInSection section: Int
+    ) -> Int {
+        return viewModel.books.count
+    }
+
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
+
+        let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: BookCollectionViewCell.reuseIdentifier,
+            for: indexPath
+        ) as! BookCollectionViewCell
+
+        let book = viewModel.books[indexPath.item]
+// kitap bilgileri hücreye aktarılıyor
+        cell.configure(book: book)
+
+        return cell
+    }
+}
+extension LibraryViewController: UICollectionViewDelegate {
+
+    func collectionView(
+        _ collectionView: UICollectionView,
+        didSelectItemAt indexPath: IndexPath
+    ) {
+        let book = viewModel.books[indexPath.item]
+
+        print(book.title)
+    }
+}

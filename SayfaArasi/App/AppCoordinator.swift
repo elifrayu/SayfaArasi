@@ -25,7 +25,10 @@ final class AppCoordinator {
     
     private func setupLibrary() {
 
-            let libraryVC = LibraryViewController()
+            let viewModel = LibraryViewModel()
+            let libraryVC = LibraryViewController(
+                viewModel: viewModel
+            )
 
             libraryVC.onSearchTapped = { [weak self] in
                 self?.showSearch()
