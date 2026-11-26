@@ -22,6 +22,33 @@ final class ProfileViewController : UIViewController {
     private let favoritesChevronImageView = UIImageView()
     private let favoritesStackView = UIStackView()
     
+    private let preferencesTitleLabel = UILabel()
+    private let preferencesStackView = UIStackView()
+
+    private let languageRowStackView = UIStackView()
+    private let languageTextStackView = UIStackView()
+
+    private let languageIconImageView = UIImageView()
+    private let languageTitleLabel = UILabel()
+    private let languageSubtitleLabel = UILabel()
+    
+    private let languageSegmentedControl = UISegmentedControl(
+        items: ["TR","EN"]
+    )
+    
+    private let appearanceRowStackView = UIStackView()
+    private let appearanceTextStackView = UIStackView()
+
+    private let appearanceIconImageView = UIImageView()
+    private let appearanceTitleLabel = UILabel()
+    private let appearanceSubtitleLabel = UILabel()
+
+    private let appearanceSegmentedControl = UISegmentedControl(
+        items: [UIImage(systemName: "sun.max")!,
+                UIImage(systemName: "moon")!
+               ]
+    )
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
@@ -32,6 +59,13 @@ final class ProfileViewController : UIViewController {
         setupFavoritesLabels()
         setupFavoritesStackView()
         setupFavoritesCard()
+        
+        setupPreferences()
+        setupLanguageComponents()
+        setupLanguageStackViews()
+        
+        setupAppearanceComponents()
+        setupAppearanceStackViews()
         
         setupConstraints()
     }
@@ -113,7 +147,16 @@ final class ProfileViewController : UIViewController {
                 favoritesStackView.trailingAnchor.constraint(
                     lessThanOrEqualTo: favoritesChevronImageView.leadingAnchor,
                     constant: -12
-                )
+                ),
+                languageIconImageView.widthAnchor.constraint(equalToConstant: 24),
+                languageIconImageView.heightAnchor.constraint(equalToConstant: 24),
+
+                languageSegmentedControl.widthAnchor.constraint(equalToConstant: 100),
+                
+                appearanceIconImageView.widthAnchor.constraint(equalToConstant: 24),
+                appearanceIconImageView.heightAnchor.constraint(equalToConstant: 24),
+
+                appearanceSegmentedControl.widthAnchor.constraint(equalToConstant: 100)
             ])
     }
     private func setupHeader() {
@@ -172,5 +215,82 @@ final class ProfileViewController : UIViewController {
         favoritesCardView.addSubview(favoritesStackView)
         favoritesCardView.addSubview(favoritesChevronImageView)
     }
-    
+    private func setupPreferences() {
+        preferencesTitleLabel.text = "TERCİHLER"
+        preferencesTitleLabel.font = AppTypography.caption
+        preferencesTitleLabel.textColor = .secondaryLabel
+
+        preferencesStackView.axis = .vertical
+        preferencesStackView.spacing = 16
+        preferencesStackView.alignment = .fill
+
+        contentStackView.addArrangedSubview(preferencesTitleLabel)
+        contentStackView.addArrangedSubview(preferencesStackView)
+    }
+    private func setupLanguageComponents(){
+        languageIconImageView.image = UIImage(systemName: "globe")
+        languageIconImageView.tintColor = AppColors.primaryText
+        languageIconImageView.contentMode = .scaleAspectFit
+
+        languageTitleLabel.text = "Dil"
+        languageTitleLabel.font = AppTypography.body
+        languageTitleLabel.textColor = AppColors.primaryText
+
+        languageSubtitleLabel.text = "Uygulama dili"
+        languageSubtitleLabel.font = AppTypography.caption
+        languageSubtitleLabel.textColor = .secondaryLabel
+
+        languageSegmentedControl.selectedSegmentIndex = 0
+    }
+    private func setupLanguageStackViews() {
+        languageTextStackView.axis = .vertical
+        languageTextStackView.spacing = 4
+        languageTextStackView.alignment = .leading
+
+        languageTextStackView.addArrangedSubview(languageTitleLabel)
+        languageTextStackView.addArrangedSubview(languageSubtitleLabel)
+
+        languageRowStackView.axis = .horizontal
+        languageRowStackView.spacing = 12
+        languageRowStackView.alignment = .center
+
+        languageRowStackView.addArrangedSubview(languageIconImageView)
+        languageRowStackView.addArrangedSubview(languageTextStackView)
+        languageRowStackView.addArrangedSubview(languageSegmentedControl)
+
+        preferencesStackView.addArrangedSubview(languageRowStackView)
+    }
+    private func setupAppearanceComponents(){
+        appearanceIconImageView.image = UIImage( systemName: "circle.lefthalf.filled")
+        appearanceIconImageView.tintColor = AppColors.primaryText
+        appearanceIconImageView.contentMode = .scaleAspectFit
+        
+        appearanceTitleLabel.text = "Tema"
+        appearanceTitleLabel.font = AppTypography.body
+        appearanceTitleLabel.textColor = AppColors.primaryText
+        
+        appearanceSubtitleLabel.text = "Uygulama teması"
+        appearanceSubtitleLabel.font = AppTypography.caption
+        appearanceSubtitleLabel.textColor = .secondaryLabel
+        
+        appearanceSegmentedControl.selectedSegmentIndex = 0
+    }
+    private func setupAppearanceStackViews(){
+        appearanceTextStackView.axis = .vertical
+        appearanceTextStackView.spacing = 4
+        appearanceTextStackView.alignment = .leading
+        
+        appearanceTextStackView.addArrangedSubview(appearanceTitleLabel)
+        appearanceTextStackView.addArrangedSubview(appearanceSubtitleLabel)
+        
+        appearanceRowStackView.axis = .horizontal
+        appearanceRowStackView.spacing = 12
+        appearanceRowStackView.alignment = .center
+        
+        appearanceRowStackView.addArrangedSubview(appearanceIconImageView)
+        appearanceRowStackView.addArrangedSubview(appearanceTextStackView)
+        appearanceRowStackView.addArrangedSubview(appearanceSegmentedControl)
+        
+        preferencesStackView.addArrangedSubview(appearanceRowStackView)
+    }
 }
